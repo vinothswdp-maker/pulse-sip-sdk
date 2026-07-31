@@ -1,0 +1,46 @@
+plugins {
+    id "com.android.library"
+    id "org.jetbrains.kotlin.android"
+}
+
+repositories {
+    google()
+    mavenCentral()
+    maven { url "../../packages/pulse_sip_bridge/build/host/outputs/repo" }
+    maven { url "https://storage.googleapis.com/download.flutter.io" }
+    maven { url "https://jitpack.io" }
+}
+
+android {
+    namespace = "com.pulse.sipsdk"
+    compileSdk = 36
+
+    defaultConfig {
+        minSdk = 24
+        targetSdk = 36
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+        profile {
+            initWith debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}
+
+dependencies {
+    debugImplementation "com.pulse.pulse_sip_bridge:flutter_debug:1.0"
+    profileImplementation "com.pulse.pulse_sip_bridge:flutter_profile:1.0"
+    releaseImplementation "com.pulse.pulse_sip_bridge:flutter_release:1.0"
+}
