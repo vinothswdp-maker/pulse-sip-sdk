@@ -50,10 +50,12 @@ dependencies {
 
 ## Permissions
 
-The AAR manifest already declares `INTERNET`, `RECORD_AUDIO`, and
-`MODIFY_AUDIO_SETTINGS` (auto-merged into your app's manifest). You still
-need to **request `RECORD_AUDIO` at runtime** yourself before calling
-`register()` or making/answering a call — the SDK does not do this for you.
+The AAR manifest already declares `INTERNET`, `RECORD_AUDIO`,
+`MODIFY_AUDIO_SETTINGS`, `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_PHONE_CALL`,
+`POST_NOTIFICATIONS`, `USE_FULL_SCREEN_INTENT`, and `WAKE_LOCK` (auto-merged
+into your app's manifest). You still need to **request `RECORD_AUDIO` and
+`POST_NOTIFICATIONS` at runtime** yourself before calling `register()` or
+making/answering a call — the SDK does not do this for you.
 
 ## Usage
 
@@ -96,10 +98,43 @@ class CallActivity : AppCompatActivity(), PulseSipSdkListener {
 }
 ```
 
-## Not included yet
+### Speaker control
 
-This SDK covers SIP registration and call control only. It does **not**
-include a lockscreen/background incoming-call UI, a foreground service to
-keep the app alive, or push-notification wake-up (FCM/APNs) — you're
-responsible for those on the native side for now, or wait for the next SDK
-module that adds them.
+```kotlin
+PulseSipSdk.setSpeakerOn(true)
+PulseSipSdk.toggleSpeaker()
+```
+
+### Background calling (foreground service + lockscreen UI)
+
+An incoming call now automatically:
+1. Starts `PulseCallForegroundService` (keeps the process alive, `phoneCall`
+   foreground-service type) so Android doesn't kill it in the background.
+2. Posts a high-priority notification with Accept/Decline actions.
+3. Fires a full-screen intent to `IncomingCallActivity` (a minimal built-in
+   lockscreen call screen) when the device is locked — your app doesn't need
+   its own Activity for this unless you want custom branding, in which case
+   just handle `onIncomingCall` yourself and never launch `IncomingCallActivity`.
+
+When you get a data-only push (FCM) that a call may be arriving (from your
+own Firebase project — this SDK doesn't own your FCM setup), call:
+
+```kotlin
+// inside your own FirebaseMessagingService.onMessageReceived
+PulseSipSdk.onPushReceived(applicationContext, remoteMessage.data)
+```
+
+This wakes the engine, starts the foreground service, and re-registers using
+the last config you passed to `register()` — so the SIP connection is live
+by the time the real INVITE arrives.
+
+## Not included yet / not verified
+
+- **Never tested against a real SIP server or on a physical device** — the
+  code compiles and the AAR builds, but the actual call flow (register,
+  ringing, audio) has not been run end-to-end yet. Verify this before
+  shipping to any real user.
+- No iOS equivalent (Android only, for now).
+- No video calling (audio-only).
+- No call transfer/merge/conference — single call (or one held + one active)
+  only, by design (out of SDK scope).

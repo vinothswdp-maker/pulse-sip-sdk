@@ -8,6 +8,8 @@ data class PulseSipConfig(
     val sipDomain: String,
     val displayName: String? = null,
     val pushContactParams: Map<String, String> = emptyMap(),
+    /** Only set true against a dev server you control. Never true in production. */
+    val allowBadCertificate: Boolean = false,
 ) {
     fun toArgs(force: Boolean): Map<String, Any?> = mapOf(
         "webSocketUrl" to webSocketUrl,
@@ -16,6 +18,7 @@ data class PulseSipConfig(
         "sipDomain" to sipDomain,
         "displayName" to displayName,
         "pushContactParams" to pushContactParams,
+        "allowBadCertificate" to allowBadCertificate,
         "force" to force,
     )
 }

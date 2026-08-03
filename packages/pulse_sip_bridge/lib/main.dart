@@ -64,6 +64,7 @@ PulseSipConfig _configFromMap(Map<dynamic, dynamic> args) {
     pushContactParams:
         (args['pushContactParams'] as Map?)?.cast<String, String>() ??
         const {},
+    allowBadCertificate: args['allowBadCertificate'] == true,
   );
 }
 
@@ -109,6 +110,12 @@ Future<dynamic> _handleCommand(MethodCall call) async {
       return null;
     case 'sendDTMF':
       await engine.sendDTMF(call.arguments as String);
+      return null;
+    case 'setSpeakerOn':
+      await engine.setSpeakerOn(call.arguments as bool);
+      return null;
+    case 'toggleSpeaker':
+      await engine.toggleSpeaker();
       return null;
     case 'isRegistered':
       return engine.isRegistered;

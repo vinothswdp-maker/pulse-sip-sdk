@@ -34,6 +34,11 @@ class PulseSipConfig {
 
   final String userAgent;
 
+  /// Whether to accept a self-signed/invalid TLS certificate on the
+  /// signaling WebSocket. Defaults to false (secure) — only set true for a
+  /// server you control during development, never in production.
+  final bool allowBadCertificate;
+
   const PulseSipConfig({
     required this.webSocketUrl,
     required this.sipUser,
@@ -50,5 +55,6 @@ class PulseSipConfig {
     this.extraRegisterHeaders = const [],
     this.registerExpiresSeconds = 2592000,
     this.userAgent = 'PulseSipCore/1.0',
+    this.allowBadCertificate = false,
   });
 }

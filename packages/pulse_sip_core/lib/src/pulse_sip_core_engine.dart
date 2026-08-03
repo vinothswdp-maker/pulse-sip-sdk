@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart' show Helper;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sip_ua/sip_ua.dart';
 import 'package:uuid/uuid.dart';
@@ -34,6 +35,7 @@ class PulseSipCoreEngine extends ChangeNotifier implements SipUaHelperListener {
   Call? _currentCall;
   bool _isMuted = false;
   bool _isOnHold = false;
+  bool _isSpeakerOn = false;
 
   Completer<void>? _connectCompleter;
   Completer<void>? _registerCompleter;
@@ -48,6 +50,7 @@ class PulseSipCoreEngine extends ChangeNotifier implements SipUaHelperListener {
   bool get isRegistered => _isRegistered;
   bool get isMuted => _isMuted;
   bool get isOnHold => _isOnHold;
+  bool get isSpeakerOn => _isSpeakerOn;
   Call? get currentCall => _currentCall;
   bool get hasActiveCall => _currentCall != null;
 
@@ -87,7 +90,7 @@ class PulseSipCoreEngine extends ChangeNotifier implements SipUaHelperListener {
     s.webSocketUrl = config.webSocketUrl;
     s.instanceId = config.instanceId ?? _instanceId;
     s.webSocketSettings = WebSocketSettings()
-      ..allowBadCertificate = true
+      ..allowBadCertificate = config.allowBadCertificate
       ..userAgent = config.userAgent;
 
     s.uri = 'sip:${config.sipUser}@${config.sipDomain}';
@@ -293,6 +296,18 @@ class PulseSipCoreEngine extends ChangeNotifier implements SipUaHelperListener {
   }
 
   void toggleMute() => _isMuted ? unmute() : mute();
+
+  Future<void> setSpeakerOn(bool enable) async {
+    try {
+      await Helper.setSpeakerphoneOn(enable);
+      _isSpeakerOn = enable;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('PulseSipCoreEngine.setSpeakerOn failed: $e');
+    }
+  }
+
+  Future<void> toggleSpeaker() => setSpeakerOn(!_isSpeakerOn);
 
   Future<void> holdCall(bool enable) async {
     final call = _currentCall;
