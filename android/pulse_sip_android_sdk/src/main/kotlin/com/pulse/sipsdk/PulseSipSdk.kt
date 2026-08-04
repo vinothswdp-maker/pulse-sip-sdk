@@ -52,6 +52,7 @@ object PulseSipSdk {
 
     fun register(config: PulseSipConfig, force: Boolean = false, onResult: ((Boolean) -> Unit)? = null) {
         lastConfig = config
+        appContext?.let { config.persist(it) }
         invoke("register", config.toArgs(force), onResult)
     }
 
@@ -96,7 +97,10 @@ object PulseSipSdk {
     fun onPushReceived(context: Context, data: Map<String, String> = emptyMap()) {
         initialize(context)
         PulseCallForegroundService.start(context.applicationContext, "Incoming call…")
-        lastConfig?.let { register(it) }
+        // lastConfig is in-memory only, so on a cold start (the common case for a push wake-up,
+        // since the process was killed) fall back to the config last persisted by register().
+        val config = lastConfig ?: PulseSipConfig.loadPersisted(context.applicationContext)
+        config?.let { register(it) }
     }
 
     /** Releases the underlying Flutter engine. Only call this if the SDK is truly done being used. */

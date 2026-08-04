@@ -352,11 +352,12 @@ class PulseSipCoreEngine extends ChangeNotifier implements SipUaHelperListener {
     if (isIncoming &&
         (state.state == CallStateEnum.CALL_INITIATION ||
             state.state == CallStateEnum.PROGRESS)) {
-      final remote = call.remote_identity ?? 'Unknown';
+      final number = call.remote_identity ?? 'Unknown';
+      final name = call.remote_display_name ?? number;
       for (final l in List<PulseIncomingCallListener>.from(
         _incomingCallListeners,
       )) {
-        l(call, remote, remote);
+        l(call, name, number);
       }
     }
 

@@ -52,10 +52,11 @@ dependencies {
 
 The AAR manifest already declares `INTERNET`, `RECORD_AUDIO`,
 `MODIFY_AUDIO_SETTINGS`, `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_PHONE_CALL`,
-`POST_NOTIFICATIONS`, `USE_FULL_SCREEN_INTENT`, and `WAKE_LOCK` (auto-merged
-into your app's manifest). You still need to **request `RECORD_AUDIO` and
-`POST_NOTIFICATIONS` at runtime** yourself before calling `register()` or
-making/answering a call — the SDK does not do this for you.
+`MANAGE_OWN_CALLS`, `POST_NOTIFICATIONS`, `USE_FULL_SCREEN_INTENT`, and
+`WAKE_LOCK` (auto-merged into your app's manifest). You still need to
+**request `RECORD_AUDIO` and `POST_NOTIFICATIONS` at runtime** yourself
+before calling `register()` or making/answering a call — the SDK does not
+do this for you.
 
 ## Usage
 
