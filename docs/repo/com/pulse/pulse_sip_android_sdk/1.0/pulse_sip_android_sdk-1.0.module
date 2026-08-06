@@ -1,0 +1,240 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.pulse",
+    "module": "pulse_sip_android_sdk",
+    "version": "1.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.14"
+    }
+  },
+  "variants": [
+    {
+      "name": "debugVariantAllBuildTypesApiPublication",
+      "attributes": {
+        "com.android.build.api.attributes.BuildTypeAttr": "debug",
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.20"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "pulse_sip_android_sdk-1.0-debug.aar",
+          "url": "pulse_sip_android_sdk-1.0-debug.aar",
+          "size": 36723,
+          "sha512": "c2681fdf1bd59d283795d4e1f17de942f9d3ec0cd828a083469efa7b33f7a11c40291e991dc545a2f0a0dbc7521ecea5c0371df00a9e7ed95d2c2671917f60d9",
+          "sha256": "d6703d8bd41e74160f4a00e5e9a9e2f72114af3265176683b85f7f6e5a0dc83b",
+          "sha1": "f1f6c42a00646dc13e87793ec392ef0dcc91bfe3",
+          "md5": "159dff27691dda3533acb39e8d1ef2f0"
+        }
+      ]
+    },
+    {
+      "name": "debugVariantAllBuildTypesRuntimePublication",
+      "attributes": {
+        "com.android.build.api.attributes.BuildTypeAttr": "debug",
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.pulse.pulse_sip_bridge",
+          "module": "flutter_debug",
+          "version": {
+            "requires": "1.0"
+          }
+        },
+        {
+          "group": "androidx.core",
+          "module": "core-ktx",
+          "version": {
+            "requires": "1.13.1"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.20"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "pulse_sip_android_sdk-1.0-debug.aar",
+          "url": "pulse_sip_android_sdk-1.0-debug.aar",
+          "size": 36723,
+          "sha512": "c2681fdf1bd59d283795d4e1f17de942f9d3ec0cd828a083469efa7b33f7a11c40291e991dc545a2f0a0dbc7521ecea5c0371df00a9e7ed95d2c2671917f60d9",
+          "sha256": "d6703d8bd41e74160f4a00e5e9a9e2f72114af3265176683b85f7f6e5a0dc83b",
+          "sha1": "f1f6c42a00646dc13e87793ec392ef0dcc91bfe3",
+          "md5": "159dff27691dda3533acb39e8d1ef2f0"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantAllBuildTypesApiPublication",
+      "attributes": {
+        "com.android.build.api.attributes.BuildTypeAttr": "release",
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.20"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "pulse_sip_android_sdk-1.0-release.aar",
+          "url": "pulse_sip_android_sdk-1.0-release.aar",
+          "size": 35226,
+          "sha512": "910a31b3c1cc1cce8c76cddf38f741d69ccea66eb56620db9d30d70d74050b9de408e4ddf467a8af6d1583b546fdb4ed69caaf166bee8a9868edade39effec8a",
+          "sha256": "f69c4e087d3af96f505e77eff34d83163a79271c6764acd2f955ce8e2b8f5c21",
+          "sha1": "9eee61223e8e599379259af8d09cfb72a601e527",
+          "md5": "223321c06f9b486fcd4e8ae10af80da5"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantAllBuildTypesRuntimePublication",
+      "attributes": {
+        "com.android.build.api.attributes.BuildTypeAttr": "release",
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.pulse.pulse_sip_bridge",
+          "module": "flutter_release",
+          "version": {
+            "requires": "1.0"
+          }
+        },
+        {
+          "group": "androidx.core",
+          "module": "core-ktx",
+          "version": {
+            "requires": "1.13.1"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.20"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "pulse_sip_android_sdk-1.0-release.aar",
+          "url": "pulse_sip_android_sdk-1.0-release.aar",
+          "size": 35226,
+          "sha512": "910a31b3c1cc1cce8c76cddf38f741d69ccea66eb56620db9d30d70d74050b9de408e4ddf467a8af6d1583b546fdb4ed69caaf166bee8a9868edade39effec8a",
+          "sha256": "f69c4e087d3af96f505e77eff34d83163a79271c6764acd2f955ce8e2b8f5c21",
+          "sha1": "9eee61223e8e599379259af8d09cfb72a601e527",
+          "md5": "223321c06f9b486fcd4e8ae10af80da5"
+        }
+      ]
+    },
+    {
+      "name": "profileVariantAllBuildTypesApiPublication",
+      "attributes": {
+        "com.android.build.api.attributes.BuildTypeAttr": "profile",
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.20"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "pulse_sip_android_sdk-1.0-profile.aar",
+          "url": "pulse_sip_android_sdk-1.0-profile.aar",
+          "size": 36741,
+          "sha512": "f81c3ef80470dcd85aa5a3834f39d3751498b50769bef94dcccd48a8c57c1f9f70d75dfce22b236e950c4cbb1425de07ce0224632e28f27c480c15a3c891a724",
+          "sha256": "67bd534646203e41042ac0ed8818f6ab349b58157fb897815c95f838b3b14de3",
+          "sha1": "111de9ece09c792e805f5835db675d4777c46fb0",
+          "md5": "6aaa06fa4f24aa58b14d86096fd39a53"
+        }
+      ]
+    },
+    {
+      "name": "profileVariantAllBuildTypesRuntimePublication",
+      "attributes": {
+        "com.android.build.api.attributes.BuildTypeAttr": "profile",
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.pulse.pulse_sip_bridge",
+          "module": "flutter_profile",
+          "version": {
+            "requires": "1.0"
+          }
+        },
+        {
+          "group": "androidx.core",
+          "module": "core-ktx",
+          "version": {
+            "requires": "1.13.1"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.20"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "pulse_sip_android_sdk-1.0-profile.aar",
+          "url": "pulse_sip_android_sdk-1.0-profile.aar",
+          "size": 36741,
+          "sha512": "f81c3ef80470dcd85aa5a3834f39d3751498b50769bef94dcccd48a8c57c1f9f70d75dfce22b236e950c4cbb1425de07ce0224632e28f27c480c15a3c891a724",
+          "sha256": "67bd534646203e41042ac0ed8818f6ab349b58157fb897815c95f838b3b14de3",
+          "sha1": "111de9ece09c792e805f5835db675d4777c46fb0",
+          "md5": "6aaa06fa4f24aa58b14d86096fd39a53"
+        }
+      ]
+    }
+  ]
+}

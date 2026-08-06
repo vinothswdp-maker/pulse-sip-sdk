@@ -1,0 +1,137 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.pulse.pulse_sip_core",
+    "module": "pulse_sip_core_debug",
+    "version": "1.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.14"
+    }
+  },
+  "variants": [
+    {
+      "name": "debugVariantDebugApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "io.flutter",
+          "module": "flutter_embedding_debug",
+          "version": {
+            "requires": "1.0.0-3452d735bd38224ef2db85ca763d862d6326b17f"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.20"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "pulse_sip_core_debug-1.0.aar",
+          "url": "pulse_sip_core_debug-1.0.aar",
+          "size": 2710,
+          "sha512": "ad0a4dc30e20950539c7c4dfc80dcab88fcb4c1a59371daf9f5df4b20a4dbf5c4d95465693f030ce520b71bd80bc888f8f4f2c1f8a38c0beda8a555b7240064c",
+          "sha256": "92f0153797e9da6fcdd1e07f0bb5a0daafebb5f6047d961a4c4faa7012b6e7eb",
+          "sha1": "5a5d553a701328941e4bb8380c71e9589909cbff",
+          "md5": "3831cabb39fbdf500640508b979841e4"
+        }
+      ]
+    },
+    {
+      "name": "debugVariantDebugRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "io.flutter",
+          "module": "flutter_embedding_debug",
+          "version": {
+            "requires": "1.0.0-3452d735bd38224ef2db85ca763d862d6326b17f"
+          }
+        },
+        {
+          "group": "com.cloudwebrtc.webrtc",
+          "module": "flutter_webrtc_debug",
+          "version": {
+            "requires": "1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.20"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "pulse_sip_core_debug-1.0.aar",
+          "url": "pulse_sip_core_debug-1.0.aar",
+          "size": 2710,
+          "sha512": "ad0a4dc30e20950539c7c4dfc80dcab88fcb4c1a59371daf9f5df4b20a4dbf5c4d95465693f030ce520b71bd80bc888f8f4f2c1f8a38c0beda8a555b7240064c",
+          "sha256": "92f0153797e9da6fcdd1e07f0bb5a0daafebb5f6047d961a4c4faa7012b6e7eb",
+          "sha1": "5a5d553a701328941e4bb8380c71e9589909cbff",
+          "md5": "3831cabb39fbdf500640508b979841e4"
+        }
+      ]
+    },
+    {
+      "name": "debugVariantDebugSourcePublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "pulse_sip_core_debug-1.0-sources.jar",
+          "url": "pulse_sip_core_debug-1.0-sources.jar",
+          "size": 1267,
+          "sha512": "40be2c5071de984a2d88ae6348e9e5ce6f6c14bfd7ee4c87742e5848ed027f63486dc5cd3a705722833ad9a9d8a9ddfc5549f39c27689fc6f63399cf0c0a39b7",
+          "sha256": "215f71c7519e6368621285fc4ba41622d8b882819abd1064f503d8006554bfc8",
+          "sha1": "1c8076b93f8332b9efd56fa93fabcddc6ee2bedc",
+          "md5": "90ab50133df79154593e730524832e44"
+        }
+      ]
+    },
+    {
+      "name": "debugVariantDebugJavaDocPublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "pulse_sip_core_debug-1.0-javadoc.jar",
+          "url": "pulse_sip_core_debug-1.0-javadoc.jar",
+          "size": 262261,
+          "sha512": "23723b49c8a72c8885b3a6280af7596acb91e16fdecd808cea137adab53192984d6afb318259074834558b2696e2091c54df2ea19aa5bbb2606cdf2d40da24de",
+          "sha256": "2b8feed052bf510fd167a8013d003de8d27b9f45c0c4176c578c5aa517e0f566",
+          "sha1": "dbd682acd16acbf466a598ad3063e03bce58a40d",
+          "md5": "6359816c4d9e9e19cbc3c814f4a8e6c7"
+        }
+      ]
+    }
+  ]
+}
