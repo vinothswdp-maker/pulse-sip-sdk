@@ -99,6 +99,24 @@ class CallActivity : AppCompatActivity(), PulseSipSdkListener {
 }
 ```
 
+### Registering with a per-customer config URL (no hardcoded credentials)
+
+Instead of building `PulseSipConfig` yourself, you can register with just a
+URL — useful if you were given a single per-account link instead of raw SIP
+credentials (see `distribution/cloudflare-worker/` in this repo for a
+ready-to-deploy server that issues these):
+
+```kotlin
+PulseSipSdk.registerWithConfigUrl(context, "https://pulse-sip-config.example.workers.dev/config/<token>") { success ->
+    // called back on the main thread
+}
+```
+
+This fetches your SIP config (JSON) from that URL over HTTPS and registers
+with it — the URL must be `https://`. The fetched config is persisted the
+same way `register()` persists one, so a later `onPushReceived` cold start
+re-registers without needing to hit the URL again.
+
 ### Speaker control
 
 ```kotlin

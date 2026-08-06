@@ -56,6 +56,27 @@ object PulseSipSdk {
         invoke("register", config.toArgs(force), onResult)
     }
 
+    /**
+     * Fetches this account's SIP config from [configUrl] (the single URL you were given for
+     * your account) and registers with it — your app never needs to hardcode a SIP
+     * user/password. Safe to call from any thread; the network fetch runs in the background
+     * and [onResult] is invoked on the main thread. The fetched config is persisted the same
+     * way [register] persists one, so a later [onPushReceived] cold start still works without
+     * re-fetching [configUrl].
+     */
+    fun registerWithConfigUrl(context: Context, configUrl: String, onResult: ((Boolean) -> Unit)? = null) {
+        initialize(context)
+        Thread {
+            val config = try {
+                PulseRemoteConfig.fetch(configUrl)
+            } catch (e: Exception) {
+                mainHandler.post { onResult?.invoke(false) }
+                return@Thread
+            }
+            mainHandler.post { register(config, onResult = onResult) }
+        }.start()
+    }
+
     fun unregister(onResult: ((Boolean) -> Unit)? = null) = invoke("unregister", null, onResult)
 
     fun makeCall(target: String, onResult: ((Boolean) -> Unit)? = null) = invoke("makeCall", target, onResult)

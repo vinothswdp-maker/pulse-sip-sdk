@@ -1,0 +1,7 @@
+name = "pulse-sip-config"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+
+kv_namespaces = [
+  { binding = "CUSTOMER_CONFIGS", id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID" }
+]
