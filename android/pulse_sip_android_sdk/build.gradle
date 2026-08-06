@@ -1,6 +1,7 @@
 plugins {
     id "com.android.library"
     id "org.jetbrains.kotlin.android"
+    id "maven-publish"
 }
 
 repositories {
@@ -37,12 +38,52 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
+    // Publishes debug/profile/release as separate variants inside ONE Gradle
+    // Module Metadata publication, each carrying its own matching flutter_* runtime
+    // dependency (below). This is what lets a consumer add a single
+    // `implementation "com.pulse:pulse_sip_android_sdk:1.0"` line with no separate
+    // debugImplementation/profileImplementation/releaseImplementation flutter_* lines
+    // of their own — Gradle's variant-aware resolution matches the right one to
+    // their own build type automatically. (A single-variant publish here would bake
+    // one hardcoded flutter_* dependency into every consumer build type regardless
+    // of which one they're building — that was the earlier duplicate-class bug.)
+    publishing {
+        multipleVariants("allBuildTypes") {
+            allVariants()
+        }
+    }
 }
 
 dependencies {
-    debugImplementation "com.pulse.pulse_sip_bridge:flutter_debug:1.0"
+    debugImplementation   "com.pulse.pulse_sip_bridge:flutter_debug:1.0"
     profileImplementation "com.pulse.pulse_sip_bridge:flutter_profile:1.0"
     releaseImplementation "com.pulse.pulse_sip_bridge:flutter_release:1.0"
 
     implementation "androidx.core:core-ktx:1.13.1"
+}
+
+// Publishes to a local Maven-layout folder under build/ — merge that folder with
+// packages/pulse_sip_bridge's host repo output and host both together (see
+// distribution/cloudflare-worker or distribution/maven-repo setup) so customers get
+// one `maven { url "..." }` + one `implementation "com.pulse:pulse_sip_android_sdk:1.0"` line.
+// storage.googleapis.com/download.flutter.io and jitpack.io still need to be in the
+// consumer's own repositories{} — those host Flutter's/audioswitch's actual binary
+// files and can't be mirrored into our own repo, regardless of how we publish.
+publishing {
+    publications {
+        allBuildTypes(MavenPublication) {
+            groupId = "com.pulse"
+            artifactId = "pulse_sip_android_sdk"
+            version = "1.0"
+            afterEvaluate {
+                from components.allBuildTypes
+            }
+        }
+    }
+    repositories {
+        maven {
+            url = uri("$buildDir/maven-repo")
+        }
+    }
 }
