@@ -6,8 +6,7 @@ plugins {
 repositories {
     google()
     mavenCentral()
-    maven { url "../../pulse_sip_android_sdk/build/maven-repo" }
-    maven { url "../../../packages/pulse_sip_bridge/build/host/outputs/repo" }
+    maven { url "https://vinothswdp-maker.github.io/pulse-sip-sdk/repo" }   // the real, live, hosted URL
     maven { url "https://storage.googleapis.com/download.flutter.io" }
     maven { url "https://jitpack.io" }
 }
