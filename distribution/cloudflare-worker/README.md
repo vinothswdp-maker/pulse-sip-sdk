@@ -1,7 +1,11 @@
 # pulse-sip-config — per-customer SIP config server
 
-Serves `PulseSipSdk.registerWithConfigUrl()` on the Android side. Each
-customer gets one URL; no SIP credentials are hardcoded in their app.
+Serves two Android-side registration flows — no SIP credentials are ever
+hardcoded in the customer's app:
+
+- `PulseSipSdk.registerWithConfigUrl()` — customer gets one unguessable URL.
+- `PulseSipSdk.registerWithCredentials()` — customer gets a company code,
+  username, and password instead (see "Adding a company user" below).
 
 This is a free-tier Cloudflare Worker + KV — no server to run or maintain.
 
@@ -91,6 +95,47 @@ immediately):
 ```bash
 wrangler kv:key put --binding=CUSTOMER_CONFIGS "$TOKEN" '{"status": "revoked"}'
 ```
+
+## Adding a company user (company code + username + password)
+
+For customers who'd rather type three short values into an app than paste a
+URL, [add-company-user.sh](add-company-user.sh) provisions a login for
+`PulseSipSdk.registerWithCredentials()` (edit the `WEBSOCKET_URL`/`SIP_DOMAIN`
+constants at the top once for your setup; requires `wrangler`, `jq`, and
+`node`):
+
+```bash
+./add-company-user.sh ACME 1001 "the-real-password" "Customer Name"
+```
+
+This writes a KV record keyed by `<company_code>:<username>` containing a
+salted PBKDF2-SHA256 hash of the password (never the plaintext) plus the
+account's SIP config, and prints the three values to hand the customer:
+
+```
+Company code: ACME
+Username:     1001
+Password:     the-real-password
+```
+
+They pass those straight to the SDK:
+
+```kotlin
+PulseSipSdk.registerWithCredentials(
+    context,
+    baseUrl = "https://pulse-sip-config.<you>.workers.dev",
+    companyCode = "ACME",
+    username = "1001",
+    password = "the-real-password",
+) { success -> /* ... */ }
+```
+
+`POST /auth` locks a `companyCode:username` pair out for 15 minutes after 10
+failed password attempts (tracked in the same KV namespace) — a basic guard
+against online password guessing, since a `companyCode`/`username` pair is
+far more guessable than the unguessable tokens the URL flow uses. Revoke a
+company user's access the same way as a token (`status: "revoked"` on their
+`<company_code>:<username>` record).
 
 ## Detecting a leaked link
 

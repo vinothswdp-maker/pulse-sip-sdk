@@ -77,6 +77,36 @@ object PulseSipSdk {
         }.start()
     }
 
+    /**
+     * Logs in with [companyCode]/[username]/[password] against your own auth server at
+     * [baseUrl] (see `distribution/cloudflare-worker/` — `POST /auth`, provisioned via
+     * `add-company-user.sh`) and registers with the SIP config it returns — your app
+     * never needs to know or store a SIP domain/password, only these three values. Safe
+     * to call from any thread; the network call runs in the background and [onResult] is
+     * invoked on the main thread. The resolved config is persisted the same way
+     * [register] persists one, so a later [onPushReceived] cold start re-registers
+     * without logging in again.
+     */
+    fun registerWithCredentials(
+        context: Context,
+        baseUrl: String,
+        companyCode: String,
+        username: String,
+        password: String,
+        onResult: ((Boolean) -> Unit)? = null,
+    ) {
+        initialize(context)
+        Thread {
+            val config = try {
+                PulseRemoteConfig.authenticate(baseUrl, companyCode, username, password)
+            } catch (e: Exception) {
+                mainHandler.post { onResult?.invoke(false) }
+                return@Thread
+            }
+            mainHandler.post { register(config, onResult = onResult) }
+        }.start()
+    }
+
     fun unregister(onResult: ((Boolean) -> Unit)? = null) = invoke("unregister", null, onResult)
 
     fun makeCall(target: String, onResult: ((Boolean) -> Unit)? = null) = invoke("makeCall", target, onResult)

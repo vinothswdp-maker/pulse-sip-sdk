@@ -117,6 +117,33 @@ with it — the URL must be `https://`. The fetched config is persisted the
 same way `register()` persists one, so a later `onPushReceived` cold start
 re-registers without needing to hit the URL again.
 
+### Registering with company code + username + password (no SIP domain either)
+
+If you'd rather not hand out a URL at all, `registerWithCredentials` logs in
+against your own auth server with three plain values — the app never sees
+`webSocketUrl`/`sipDomain`, only what you hand the end user directly (see
+`distribution/cloudflare-worker/` — `POST /auth`, provisioned via
+`add-company-user.sh`):
+
+```kotlin
+PulseSipSdk.registerWithCredentials(
+    context,
+    baseUrl = "https://pulse-sip-config.example.workers.dev",
+    companyCode = "ACME",
+    username = "1001",
+    password = "secret",
+) { success ->
+    // called back on the main thread
+}
+```
+
+Same persistence behavior as `registerWithConfigUrl` — the resolved config is
+saved so a later `onPushReceived` cold start re-registers without logging in
+again. `baseUrl` must be `https://`. Before registering, the SDK checks that
+the config's account matches `username` and fails the login instead of
+registering if it doesn't — a safety net against a bad backend record
+silently signing the app into the wrong account.
+
 ### Speaker control
 
 ```kotlin

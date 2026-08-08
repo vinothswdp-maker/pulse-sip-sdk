@@ -6,8 +6,9 @@ import java.net.URL
 
 /**
  * Fetches a [PulseSipConfig] from a per-customer config URL, so the host app
- * never needs to hardcode SIP credentials — see [PulseSipSdk.registerWithConfigUrl].
- * Expects a JSON body shaped like [PulseSipConfig]'s fields, e.g.:
+ * never needs to hardcode SIP credentials — see [PulseSipSdk.registerWithConfigUrl]
+ * and [PulseSipSdk.registerWithCredentials]. Expects a JSON body shaped like
+ * [PulseSipConfig]'s fields, e.g.:
  * ```json
  * {
  *   "webSocketUrl": "wss://sip.example.com:8089/ws",
@@ -39,6 +40,52 @@ internal object PulseRemoteConfig {
             }
             val body = connection.inputStream.bufferedReader().readText()
             return parse(JSONObject(body))
+        } finally {
+            connection.disconnect()
+        }
+    }
+
+    /**
+     * Logs in with [companyCode]/[username]/[password] against `$baseUrl/auth` (see
+     * `distribution/cloudflare-worker/worker.js`) and returns the [PulseSipConfig] it
+     * issues for that login — call from a background thread only.
+     *
+     * Cross-checks the response against the request before returning: the config's
+     * [PulseSipConfig.sipUser] must match [username], the exact value that was just
+     * authenticated. This is a safety net against a backend provisioning mistake (e.g. a
+     * `companyCode:username` KV record accidentally holding a different account's SIP
+     * config) — without it, the app would silently register as the wrong account instead
+     * of failing loudly.
+     */
+    fun authenticate(baseUrl: String, companyCode: String, username: String, password: String): PulseSipConfig {
+        require(baseUrl.startsWith("https://")) {
+            "baseUrl must be https:// — refusing to send credentials over plaintext HTTP"
+        }
+
+        val connection = URL("$baseUrl/auth").openConnection() as HttpURLConnection
+        connection.requestMethod = "POST"
+        connection.connectTimeout = TIMEOUT_MS
+        connection.readTimeout = TIMEOUT_MS
+        connection.doOutput = true
+        connection.setRequestProperty("Content-Type", "application/json")
+        try {
+            val requestBody = JSONObject().apply {
+                put("companyCode", companyCode)
+                put("username", username)
+                put("password", password)
+            }
+            connection.outputStream.use { it.write(requestBody.toString().toByteArray(Charsets.UTF_8)) }
+
+            if (connection.responseCode != HttpURLConnection.HTTP_OK) {
+                error("Login failed: HTTP ${connection.responseCode}")
+            }
+            val body = connection.inputStream.bufferedReader().readText()
+            val config = parse(JSONObject(body))
+            check(config.sipUser == username) {
+                "Login response account (${config.sipUser}) does not match the requested " +
+                    "username ($username) — refusing to register with a mismatched account"
+            }
+            return config
         } finally {
             connection.disconnect()
         }
