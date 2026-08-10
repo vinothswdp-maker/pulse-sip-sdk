@@ -37,8 +37,33 @@ final config = PulseSipConfig(
   sipDomain: 'sip.example.com',
 );
 
-await sip.registerAccount(config);
+try {
+  await sip.registerAccount(config);
+} catch (e) {
+  print('Registration failed: $e'); // e.g. timed out, or the server rejected it
+}
 await sip.makeCall('1002');
+```
+
+`registerAccount`/`registerWithCredentials` throw if registration doesn't
+actually succeed (timeout, or the SIP server rejects it) — always wrap the
+call, and also use `addRegistrationListener` for the live registered/
+unregistered state afterwards (e.g. after a network drop).
+
+### Registering with company code + username + password (no SIP domain either)
+
+If you'd rather not hand the app a raw SIP domain/extension, `registerWithCredentials`
+logs in against the Pulse account backend (ConnectHub) with the same account
+code/username/password used to log into the Pulse platform, and registers
+with whichever SIP extension/proxy that account resolves to — the app never
+needs to know a SIP domain or extension:
+
+```dart
+await sip.registerWithCredentials(
+  companyCode: 'PTPL',
+  username: 'Vinoth',
+  password: 'Pulse@123',
+);
 ```
 
 ## Status

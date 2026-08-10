@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sip_ua/sip_ua.dart';
 import 'package:uuid/uuid.dart';
 
+import 'pulse_remote_config.dart';
 import 'pulse_sip_config.dart';
 import 'pulse_sip_events.dart';
 
@@ -176,14 +177,41 @@ class PulseSipCoreEngine extends ChangeNotifier implements SipUaHelperListener {
       try {
         await _registerCompleter!.future.timeout(
           const Duration(seconds: 10),
-          onTimeout: () {},
+          onTimeout: () => throw StateError(
+            'SIP registration timed out after 10s — check network/proxy reachability',
+          ),
         );
-      } catch (_) {
+      } catch (e) {
+        // 'cancelled' means a newer registerAccount() call superseded this one —
+        // not a failure of this call, so it stays silent (matches connect()'s
+        // handling of the same signal). Anything else (timeout, or the SIP
+        // server explicitly rejecting registration) is a real failure and must
+        // propagate — silently swallowing it here would let callers believe
+        // registration succeeded when it didn't.
+        if (e.toString() != 'cancelled') rethrow;
       } finally {
         _registerCompleter = null;
       }
     }
     _startRegistrationMonitor(config);
+  }
+
+  /// Logs in with [companyCode]/[username]/[password] (your Pulse account
+  /// code, username, and password) and registers with the SIP extension/
+  /// proxy the login resolves to — your app never needs to know a SIP
+  /// domain or extension, only the same three values used to log in.
+  Future<void> registerWithCredentials({
+    required String companyCode,
+    required String username,
+    required String password,
+    bool force = false,
+  }) async {
+    final config = await PulseRemoteConfig.authenticate(
+      companyCode: companyCode,
+      username: username,
+      password: password,
+    );
+    await registerAccount(config, force: force);
   }
 
   Future<void> unregister({bool all = true, bool quick = false}) async {
