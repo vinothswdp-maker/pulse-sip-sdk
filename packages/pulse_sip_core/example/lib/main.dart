@@ -196,6 +196,14 @@ class _MyAppState extends State<MyApp> {
                     },
                     child: const Text('Toggle speaker'),
                   ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await _sip.toggleHold();
+                      _addLog('toggleHold() -> onHold=${_sip.isOnHold}');
+                      setState(() {});
+                    },
+                    child: const Text('Toggle hold'),
+                  ),
                 ],
               ),
               const Divider(height: 24),

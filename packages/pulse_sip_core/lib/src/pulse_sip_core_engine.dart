@@ -354,6 +354,12 @@ class PulseSipCoreEngine extends ChangeNotifier implements SipUaHelperListener {
     }
   }
 
+  Future<void> hold() => holdCall(true);
+
+  Future<void> unhold() => holdCall(false);
+
+  Future<void> toggleHold() => holdCall(!_isOnHold);
+
   Future<void> sendDTMF(String digit) async {
     _currentCall?.sendDTMF(digit);
   }
