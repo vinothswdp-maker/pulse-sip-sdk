@@ -47,15 +47,15 @@ internal object PulseRemoteConfig {
 
     /**
      * Logs in with [companyCode]/[username]/[password] against `$baseUrl/auth` (see
-     * `distribution/cloudflare-worker/worker.js`) and returns the [PulseSipConfig] it
-     * issues for that login — call from a background thread only.
+     * `distribution/cloudflare-worker/worker.js`) and returns the [PulseSipConfig] to
+     * register with — call from a background thread only.
      *
-     * Cross-checks the response against the request before returning: the config's
-     * [PulseSipConfig.sipUser] must match [username], the exact value that was just
-     * authenticated. This is a safety net against a backend provisioning mistake (e.g. a
-     * `companyCode:username` KV record accidentally holding a different account's SIP
-     * config) — without it, the app would silently register as the wrong account instead
-     * of failing loudly.
+     * The server only confirms [companyCode]/[username]/[password] are valid and tells
+     * us which proxy to use (`webSocketUrl`/`sipDomain`); it never echoes the SIP
+     * password back over the network. [username]/[password] — the exact values that were
+     * just authenticated — become [PulseSipConfig.sipUser]/[PulseSipConfig.sipPassword]
+     * directly, the same way a login API response only carries account/proxy info while
+     * the password the user already typed stays client-side.
      */
     fun authenticate(baseUrl: String, companyCode: String, username: String, password: String): PulseSipConfig {
         require(baseUrl.startsWith("https://")) {
@@ -80,15 +80,26 @@ internal object PulseRemoteConfig {
                 error("Login failed: HTTP ${connection.responseCode}")
             }
             val body = connection.inputStream.bufferedReader().readText()
-            val config = parse(JSONObject(body))
-            check(config.sipUser == username) {
-                "Login response account (${config.sipUser}) does not match the requested " +
-                    "username ($username) — refusing to register with a mismatched account"
-            }
-            return config
+            return parseAuthResponse(JSONObject(body), username, password)
         } finally {
             connection.disconnect()
         }
+    }
+
+    /** Like [parse], but the response carries proxy info only — sipUser/sipPassword come from the login itself. */
+    private fun parseAuthResponse(json: JSONObject, username: String, password: String): PulseSipConfig {
+        val paramsJson = json.optJSONObject("pushContactParams")
+        val params = mutableMapOf<String, String>()
+        paramsJson?.keys()?.forEach { key -> params[key] = paramsJson.getString(key) }
+        return PulseSipConfig(
+            webSocketUrl = json.getString("webSocketUrl"),
+            sipUser = username,
+            sipPassword = password,
+            sipDomain = json.getString("sipDomain"),
+            displayName = json.opt("displayName") as? String,
+            pushContactParams = params,
+            allowBadCertificate = json.optBoolean("allowBadCertificate", false),
+        )
     }
 
     private fun parse(json: JSONObject): PulseSipConfig {

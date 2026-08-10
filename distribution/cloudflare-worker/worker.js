@@ -1,8 +1,9 @@
 /**
  * Serves each customer's SIP config from KV, two ways:
  *
- *   GET  /config/<token>                 ->  200 { webSocketUrl, sipUser, sipPassword, sipDomain, ... }
- *   POST /auth  { companyCode, username, password }  ->  200 { ...same shape... }
+ *   GET  /config/<token>                              ->  200 { webSocketUrl, sipUser, sipPassword, sipDomain, ... }
+ *   POST /auth  { companyCode, username, password }    ->  200 { webSocketUrl, sipDomain, ... }  (no sipUser/sipPassword —
+ *                                                           the app already knows those, they're exactly what it sent)
  *
  * The Android app calls these at runtime via PulseSipSdk.registerWithConfigUrl(context, url)
  * or PulseSipSdk.registerWithCredentials(context, baseUrl, companyCode, username, password) —
@@ -16,13 +17,14 @@
  *   }
  *
  * KV value shape for the credentials flow, keyed by "<companyCode>:<username>"
- * (see README.md, provisioned via add-company-user.sh):
+ * (see README.md, provisioned via add-company-user.sh) — no sipUser/sipPassword needed
+ * here at all, since the app supplies both directly at login time:
  *   {
  *     "status": "active" | "revoked",
  *     "expiresAt": "2027-01-01T00:00:00Z",   // optional
  *     "salt": "<hex>",
  *     "passwordHash": "<hex, PBKDF2-SHA256(password, salt, 100000 iterations)>",
- *     "config": { ...PulseSipConfig fields... }
+ *     "config": { "webSocketUrl": "...", "sipDomain": "...", "displayName": "...", ... }
  *   }
  */
 const MAX_FAILED_ATTEMPTS = 10;
@@ -128,7 +130,10 @@ async function handleAuth(request, env) {
   await env.CUSTOMER_CONFIGS.delete(failKey);
   await bumpAccessCount(env, `count:${key}`);
 
-  return jsonResponse(record.config);
+  // Never echo sipUser/sipPassword back — the app already knows them (they're exactly
+  // what it just sent), so the response only needs to carry proxy/account info.
+  const { sipUser, sipPassword, ...proxyConfig } = record.config;
+  return jsonResponse(proxyConfig);
 }
 
 function jsonResponse(config) {

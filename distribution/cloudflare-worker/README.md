@@ -108,9 +108,12 @@ constants at the top once for your setup; requires `wrangler`, `jq`, and
 ./add-company-user.sh ACME 1001 "the-real-password" "Customer Name"
 ```
 
-This writes a KV record keyed by `<company_code>:<username>` containing a
-salted PBKDF2-SHA256 hash of the password (never the plaintext) plus the
-account's SIP config, and prints the three values to hand the customer:
+`<username>`/`<password>` here ARE the real SIP account credentials (what the
+SIP proxy expects for REGISTER) — this writes a KV record keyed by
+`<company_code>:<username>` containing only a salted PBKDF2-SHA256 hash of the
+password (never the plaintext) plus the proxy info (`webSocketUrl`/
+`sipDomain`); `/auth` never stores or echoes the password back, the app
+already knows it. It prints the three values to hand the customer:
 
 ```
 Company code: ACME

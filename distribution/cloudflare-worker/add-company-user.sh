@@ -3,6 +3,10 @@
 # (PulseSipSdk.registerWithCredentials) — the customer's app only ever needs a company
 # code, a username, and a password; it never sees webSocketUrl/sipDomain.
 #
+# <username>/<password> ARE the real SIP account credentials (the same values the SIP
+# proxy expects for REGISTER) — the server only verifies the password hash and tells the
+# app which proxy to use, it never stores or echoes the password in the clear.
+#
 # Usage: ./add-company-user.sh <company_code> <username> <password> <customer_name> [expires_at]
 #   expires_at: optional ISO8601 date, e.g. 2027-01-01T00:00:00Z
 #
@@ -35,8 +39,6 @@ RECORD=$(jq -n \
   --arg salt "$SALT" \
   --arg hash "$PASSWORD_HASH" \
   --arg wsUrl "$WEBSOCKET_URL" \
-  --arg user "$USERNAME" \
-  --arg pass "$PASSWORD" \
   --arg domain "$SIP_DOMAIN" \
   --arg name "$CUSTOMER_NAME" \
   --arg expires "$EXPIRES_AT" \
@@ -47,8 +49,6 @@ RECORD=$(jq -n \
     passwordHash: $hash,
     config: {
       webSocketUrl: $wsUrl,
-      sipUser: $user,
-      sipPassword: $pass,
       sipDomain: $domain,
       displayName: $name,
       pushContactParams: {},
