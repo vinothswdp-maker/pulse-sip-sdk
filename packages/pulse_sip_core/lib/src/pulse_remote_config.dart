@@ -59,6 +59,11 @@ class PulseRemoteConfig {
         sipPassword: password,
         sipDomain: proxyDomain,
         displayName: data['m_memberName'] as String?,
+        // pulse-proxy-*.pulsework360.com currently serves an incomplete TLS
+        // chain (missing intermediate CA cert) — Pulse-Phone's own
+        // sip_helper.dart already works around this the same way. Remove
+        // this once the proxy serves the full chain (see project notes).
+        allowBadCertificate: true,
       );
     } finally {
       client.close();
