@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'pulse_sip_config.dart';
 
 /// Logs in against Pulse's own account backend (ConnectHub) and resolves the

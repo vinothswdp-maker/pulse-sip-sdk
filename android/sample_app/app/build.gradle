@@ -43,11 +43,8 @@ android {
 }
 
 dependencies {
-    // The exact single line a real customer would add. No separate
-    // debugImplementation/profileImplementation/releaseImplementation flutter_*
-    // lines needed — pulse_sip_android_sdk's multi-variant Maven publish carries
-    // the right one transitively per build type (see its build.gradle).
-    implementation "com.pulse:pulse_sip_android_sdk:1.0"
+    
+       implementation "com.pulse:pulse_sip_android_sdk:1.0"
 
     implementation "androidx.core:core-ktx:1.13.1"
 }
