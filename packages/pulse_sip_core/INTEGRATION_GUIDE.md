@@ -184,20 +184,7 @@ Useful getters at any point: `sip.isRegistered`, `sip.isConnected`,
 `sip.hasActiveCall`, `sip.isMuted`, `sip.isOnHold`, `sip.isSpeakerOn`,
 `sip.currentCall`.
 
-## 8. What's out of scope
-
-- **App killed / backgrounded**: this package is pure Dart/Flutter logic —
-  when your app's process is killed, nothing survives, including the SIP
-  connection. Receiving calls while killed requires native Android/iOS
-  work on your end (a foreground service + a push (FCM/APNs) wake-up that
-  re-calls `registerWithCredentials`) — this SDK doesn't include that
-  wiring. Ask us if you need this built.
-- **Video, conferencing, call transfer**: audio-only, single active call
-  (plus one held), by design.
-- **Contacts, call history**: app-specific concerns, left to you — wire
-  them up from the listener callbacks above.
-
-## 9. Minimal end-to-end example
+## 8. Minimal end-to-end example
 
 ```dart
 import 'package:flutter/material.dart';
