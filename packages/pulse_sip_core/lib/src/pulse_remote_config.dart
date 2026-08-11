@@ -40,7 +40,11 @@ class PulseRemoteConfig {
       final body = await response.transform(utf8.decoder).join();
 
       if (response.statusCode != 200) {
-        throw StateError('Login failed: HTTP ${response.statusCode}');
+        final serverMessage = _tryExtractMessage(body);
+        throw StateError(
+          'Login failed: HTTP ${response.statusCode}'
+          '${serverMessage != null ? ' — $serverMessage' : ''}',
+        );
       }
 
       final json = jsonDecode(body) as Map<String, dynamic>;
@@ -67,5 +71,21 @@ class PulseRemoteConfig {
     } finally {
       client.close();
     }
+  }
+
+  /// Best-effort extraction of a human-readable error from a non-200 body —
+  /// the server's error responses aren't guaranteed to be JSON, so this never
+  /// throws itself.
+  static String? _tryExtractMessage(String body) {
+    try {
+      final json = jsonDecode(body);
+      if (json is Map<String, dynamic>) {
+        final message = json['message'];
+        if (message is String && message.isNotEmpty) return message;
+      }
+    } catch (_) {
+      // Not JSON (or empty) — fall through.
+    }
+    return body.trim().isEmpty ? null : body.trim();
   }
 }
