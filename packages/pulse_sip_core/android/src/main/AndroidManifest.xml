@@ -1,3 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.pulse.pulse_sip_core">
+  <!-- Neither flutter_webrtc nor sip_ua declare these themselves, so without
+       them here a host app that doesn't happen to already have them crashes
+       WebRTC's native network monitor (SIGABRT in libjingle_peerconnection_so)
+       the moment a call starts — see project notes for the crash signature. -->
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+  <uses-permission android:name="android.permission.RECORD_AUDIO" />
+  <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 </manifest>

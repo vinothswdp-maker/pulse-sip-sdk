@@ -66,6 +66,18 @@ await sip.registerWithCredentials(
 );
 ```
 
+## Permissions
+
+The plugin's manifest declares `INTERNET`, `ACCESS_NETWORK_STATE`,
+`RECORD_AUDIO`, and `MODIFY_AUDIO_SETTINGS` (auto-merged into your app's
+manifest — you don't need to add them yourself). `RECORD_AUDIO` is a
+dangerous permission though, so Android still requires you to **request it
+at runtime** before calling `registerAccount`/`registerWithCredentials` or
+making/answering a call — the SDK does not prompt for it for you. Skipping
+this crashes the app the moment a call starts (`SIGABRT` inside
+`libjingle_peerconnection_so`, from WebRTC's network monitor hitting a
+permission it needs but wasn't granted).
+
 ## Status
 
 Flutter/Dart core only, verified with `flutter analyze` (no issues). Not yet
